@@ -12,9 +12,17 @@ class AddUserForm(FlaskForm):
     username = StringField("Username", validators=[InputRequired(),
                                                         Length(min=1, max=20)])
     password = PasswordField("Password", validators=[InputRequired()])
-    email = StringField("Email Address", validators=[InputRequired()])
+    email = StringField("Email Address", validators=[InputRequired(), Email()])
     # Email() is an issue
     first_name = StringField("First Name", validators=[InputRequired(), 
                                                         Length(min=1, max=30)])
     last_name = StringField("Last Name", validators=[InputRequired(), 
                                                         Length(min=1, max=30)])
+
+
+class LoginForm(FlaskForm):
+    '''Login user form'''
+
+    username = StringField("Username", validators=[InputRequired(),
+                                                        Length(min=1, max=20)])
+    password = PasswordField("Password", validators=[InputRequired()])
