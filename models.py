@@ -1,8 +1,11 @@
 '''Models for Notes'''
 
 from flask_sqlalchemy import SQLAlchemy  
+from flask_bcrypt import Bcrypt 
 
 db = SQLAlchemy()
+bcrypt = Bcrypt()
+
 
 def connect_db(app):
     '''Connect to database'''
@@ -34,5 +37,17 @@ class User(db.Model):
 
         return f'''<username {self.username}, 
         first_name {self.first_name}, last_name {self.last_name}>'''
+
+
+    @classmethod
+    def register(cls, username, password, first_name, last_name, email):
+        """Register user with hashed password and return user."""
+
+        hashed = bcrypt.generate_password_hash(password).decode("utf8")
+
+        #return instance of user w/username and hashed pwd
+        return cls(username=username, password=hashed, first_name=first_name, 
+                                last_name=last_name, email=email)
+
 
     
