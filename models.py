@@ -17,7 +17,7 @@ def connect_db(app):
 class User(db.Model):
     '''User.'''
 
-    ___tablename__ = 'users'
+    __tablename__ = 'users'
 
     username = db.Column(db.String(20),
                         primary_key=True,
@@ -31,6 +31,7 @@ class User(db.Model):
                             nullable=False)
     last_name = db.Column(db.String(30),
                             nullable=False)
+    notes = db.relationship('Note')
 
     def __repr__(self):
         '''Show user instance information'''
@@ -78,5 +79,6 @@ class Note(db.Model):
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.String, nullable=False)
     owner = db.Column(db.ForeignKey("users.username"))
+    user = db.relationship('User')
     #text with SQL, String - SQLAlchemy ??
 

@@ -26,3 +26,8 @@ class LoginForm(FlaskForm):
     username = StringField("Username", validators=[InputRequired(),
                                                         Length(min=1, max=20)])
     password = PasswordField("Password", validators=[InputRequired()])
+
+class DeleteUser(FlaskForm):
+    '''Delete user instance'''
+
+    

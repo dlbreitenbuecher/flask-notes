@@ -13,6 +13,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 
 connect_db(app)
+db.create_all()
 
 app.config['SECRET_KEY'] = "I'LL NEVER TELL!!"
 
@@ -46,7 +47,7 @@ def register_user():
         db.session.add(user)
         db.session.commit()
 
-        return redirect("/secret")
+        return redirect(f'/users/{user.username}')
     
     else:
         return render_template("add_user_form.html", form=form)
@@ -113,3 +114,32 @@ def show_user(username):
         user = User.query.get_or_404(username)
 
         return render_template("secret.html", user=user)
+
+
+@app.route('/users/<username>/delete')
+def delete_user(username):
+    '''Deletes a user from the users table 
+    and their associated notes from the notes table'''
+
+    # always good to recheck authorization
+    if 'user_id' not in session:
+        flash("You must be logged in!", "danger")
+        return redirect("/login")
+    else: 
+
+        form = DeleteUser()
+
+        if form.validate_on_submit():
+            user = User.query.get_or_404(username)
+            notes = user.notes
+
+            # Delete notes first since notes references user with a foreign key
+            db.session.delete(notes)
+            db.session.delete(user)
+            db.commit()
+
+            # Remove user id from session 
+            session.pop("user_id")
+
+        return redirect('/')
+
