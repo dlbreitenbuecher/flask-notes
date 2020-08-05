@@ -56,10 +56,27 @@ class User(db.Model):
         Return user if valid; else return False
         '''
         
-        # TODO: ask if we could also write user = cls.query...
-        user = User.query.filter_by(username=username).first()
+        # cls stands in for the class the method is called on. 
+        # if have fancy user class inherit form User and had add. properties
+        # if call FancyUser.authenticate it would query on Users class instead of 
+        # of querying on FancyUser if we did User.query.filter_by(username=username)
+        # vs. cls.query.filter_by(username=username).first()
+        user = cls.query.filter_by(username=username).first()
 
         if user and bcrypt.check_password_hash(user.password, password):
             return user
         else:
             return False
+
+
+class Note(db.Model):
+    """Note."""
+
+    __tablename__ = "notes"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.String, nullable=False)
+    owner = db.Column(db.ForeignKey("users.username"))
+    #text with SQL, String - SQLAlchemy ??
+
